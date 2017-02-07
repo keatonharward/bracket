@@ -1,0 +1,17 @@
+//
+//  Matchup.swift
+//  Bracket
+//
+//  Created by Keaton Harward on 2/7/17.
+//  Copyright © 2017 KeatonHarward. All rights reserved.
+//
+
+import Foundation
+
+struct Matchup {
+    
+    var teams: [Team?]
+    var winner: Team?
+    var loser: Team?
+    
+}
