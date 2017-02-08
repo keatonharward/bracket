@@ -10,10 +10,20 @@ import Foundation
 
 class BracketController {
     
-    func createBracketStructure(bracket: Bracket) -> [String:[[Int:Team]]] {
-        let rounds = findRounds(bracket: bracket)
+    func createBracketStructure(bracket: Bracket) -> [String:[matchup]] {
+        let numberOfRounds = findRounds(bracket: bracket)
+        let rounds = findMatchups(teams: bracket.teams, numberOfRounds: numberOfRounds)
         
+        // randomize teams if seeding is set to random
+        if bracket.seeded == false {
+            // TODO: - implement randomize function
+        }
+        
+        
+        return rounds // temporary to get rid of errors, need to return matchups with teams in round 1 & 2
     }
+    
+    // Calculate the number of rounds in the tournament
     
     func findRounds(bracket: Bracket) -> Int {
         var gamesRemaining = bracket.teams.count - 1
@@ -27,24 +37,59 @@ class BracketController {
         return numberOfRounds
     }
     
+    // create matchup objects for every game in the tournament
+    
     func findMatchups(teams: [Team], numberOfRounds: Int) -> [String:[matchup]] {
-        var totalGames = teams.count - 1
-//        var firstRoundGames = gamesRemaining - (2 ^ (numberOfRounds - 1))
+        let totalGames = teams.count - 1
         var matchupsInRound = 1
         var currentRound = numberOfRounds
+        var matchups = [String:[matchup]]()
         while currentRound > 0 {
             var remainingGamesInRound: Int
+            var roundMatchups = [matchup]()
             if currentRound == 1 {
                 remainingGamesInRound = totalGames - (2 ^ (numberOfRounds - 1))
             } else {
             remainingGamesInRound = matchupsInRound
             }
+            
             while remainingGamesInRound > 0 {
-//                let matchup = initialize an empty matchup to fill with teams lata
+                let newMatchup = matchup()
+                roundMatchups.append(newMatchup)
                 remainingGamesInRound -= 1
             }
+            matchups["Round\(currentRound)"] = roundMatchups
             matchupsInRound *= 2
             currentRound -= 1
+        }
+        return matchups
+    }
+    
+    // assign seeds to teams and add them to the appropriate matchups
+    
+    func seedTeams(teams: [Team], rounds: [String:[matchup]]) -> [String:[matchup]] {
+        
+        var seed = 1
+        for team in teams {
+            team.seed = seed
+            seed += 1
+        }
+        
+        let round1MatchupsOptional = rounds["Round1"]
+        guard var round1Matchups = round1MatchupsOptional else {return rounds}
+        
+        if (round1Matchups.count * 2) < teams.count {
+            var round2Teams = teams.dropLast(round1Matchups.count * 2)
+            var round1Teams = teams.dropFirst(round2Teams.count)
+            
+            
+        } else {
+            var round1Teams = teams
+            for matchup in round1Matchups {
+                matchup.teams.append(round1Teams.first)
+                round1Teams.removeFirst()
+                matchup.teams.append(round1Teams.popLast())
+            }
         }
         
     }

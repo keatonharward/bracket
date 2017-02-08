@@ -8,10 +8,15 @@
 
 import Foundation
 
-struct matchup {
+class matchup {
     
-    var teams: [[Int:Team]?]
+    var teams: [Team?]
     var winner: Team?
     var loser: Team?
     
+    init(teams: [Team?] = [nil], winner: Team? = nil, loser: Team? = nil) {
+    self.teams = teams
+    self.winner = winner
+    self.loser = loser
+    }
 }
