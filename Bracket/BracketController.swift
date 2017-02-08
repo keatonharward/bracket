@@ -27,7 +27,25 @@ class BracketController {
         return numberOfRounds
     }
     
-    func findMatchups(teams: [Team]) -> [Matchup] {
+    func findMatchups(teams: [Team], numberOfRounds: Int) -> [String:[matchup]] {
+        var totalGames = teams.count - 1
+//        var firstRoundGames = gamesRemaining - (2 ^ (numberOfRounds - 1))
+        var matchupsInRound = 1
+        var currentRound = numberOfRounds
+        while currentRound > 0 {
+            var remainingGamesInRound: Int
+            if currentRound == 1 {
+                remainingGamesInRound = totalGames - (2 ^ (numberOfRounds - 1))
+            } else {
+            remainingGamesInRound = matchupsInRound
+            }
+            while remainingGamesInRound > 0 {
+//                let matchup = initialize an empty matchup to fill with teams lata
+                remainingGamesInRound -= 1
+            }
+            matchupsInRound *= 2
+            currentRound -= 1
+        }
         
     }
     

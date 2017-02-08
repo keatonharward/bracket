@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct Matchup {
+struct matchup {
     
-    var teams: [[Int:Team]]
+    var teams: [[Int:Team]?]
     var winner: Team?
     var loser: Team?
     
