@@ -19,8 +19,9 @@ class BracketController {
             // TODO: - implement randomize function
         }
         
+        let seededWithTeams = seedTeams(teams: bracket.teams, rounds: rounds)
         
-        return rounds // temporary to get rid of errors, need to return matchups with teams in round 1 & 2
+        return seededWithTeams
     }
     
     // Calculate the number of rounds in the tournament
@@ -75,12 +76,36 @@ class BracketController {
             seed += 1
         }
         
-        let round1MatchupsOptional = rounds["Round1"]
-        guard var round1Matchups = round1MatchupsOptional else {return rounds}
+        var returnRounds = rounds
+        let round1MatchupsOptional = returnRounds["Round1"]
+        guard let round1Matchups = round1MatchupsOptional else {return rounds}
+        let round2MatchupsOptional = returnRounds["Round2"]
+        guard let round2Matchups = round2MatchupsOptional else {return rounds}
         
         if (round1Matchups.count * 2) < teams.count {
             var round2Teams = teams.dropLast(round1Matchups.count * 2)
             var round1Teams = teams.dropFirst(round2Teams.count)
+            var playInCounter = round1Matchups.count
+            
+            for matchup in round1Matchups {
+                matchup.teams.append(round1Teams.first)
+                round1Teams.removeFirst()
+                matchup.teams.append(round1Teams.popLast())
+            }
+            returnRounds.updateValue(round1Matchups, forKey: "Round1")
+            
+            for matchup in round2Matchups {
+                if playInCounter > 0 {
+                    matchup.teams.append(round2Teams.first)
+                    round2Teams.removeFirst()
+                    playInCounter -= 1
+                } else {
+                    matchup.teams.append(round2Teams.first)
+                    round2Teams.removeFirst()
+                    matchup.teams.append(round2Teams.popLast())
+                }
+                returnRounds.updateValue(round2Matchups, forKey: "Round2")
+            }
             
             
         } else {
@@ -90,10 +115,10 @@ class BracketController {
                 round1Teams.removeFirst()
                 matchup.teams.append(round1Teams.popLast())
             }
+            returnRounds.updateValue(round1Matchups, forKey: "Round1")
         }
-        
+        return returnRounds
     }
     
 }
 
-// [String:[[Int:Team]]]
