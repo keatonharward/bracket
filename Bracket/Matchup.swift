@@ -10,7 +10,7 @@ import Foundation
 
 struct Matchup {
     
-    var teams: [Team?]
+    var teams: [[Int:Team]]
     var winner: Team?
     var loser: Team?
     
